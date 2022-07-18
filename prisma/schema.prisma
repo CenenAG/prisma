@@ -11,6 +11,37 @@ datasource db {
 }
 
 model User {
-  id   Int    @id @default(autoincrement())
-  name String
+  id          String @id @default(uuid())
+  age         Int
+  name        String
+  email       String @unique
+  role        Role
+  preferences Json?
+  posts       Post[]
+}
+
+model Post {
+  Id            String     @id @default(uuid())
+  title         String
+  averageRating Float
+  createAt      DateTime   @default(now())
+  updateAt      DateTime   @updateAt
+  author        User       @relation("WrittenPosts", fields: [authorId], references: [id])
+  authorId      String
+  favoritedBy   User?      @relation("FavoritePosts", fields: [favoritedById], references: [id])
+  favoritedById String?
+  categories    Category[]
+}
+
+model Category {
+  id    String @id @default(uuid())
+  name  String
+  posts Post[]
+}
+
+enum Role {
+  BASIC
+  ADVANCED
+  MEDIUM
+  ADMIN
 }
